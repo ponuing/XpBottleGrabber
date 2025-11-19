@@ -14,9 +14,6 @@
       "com.battiboom1.xpbottlegrabbler.XpBottleGrabbler"
     ]
   },
-  "mixins": [
-    "xpbottlegrabbler.mixins.json"
-  ],
   "depends": {
     "fabricloader": ">=${loader_version}",
     "fabric": "*",

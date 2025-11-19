@@ -2,60 +2,59 @@ package com.battiboom1.xpbottlegrabbler;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.minecraft.item.Item;
+import net.fabricmc.fabric.api.event.player.UseItemCallback;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.NbtComponent;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.screen.SimpleNamedScreenHandlerFactory;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-import net.minecraft.inventory.SimpleInventory;
-import net.minecraft.item.ItemStack;
+import net.minecraft.util.ActionResult;
 
 public class XpBottleGrabbler implements ModInitializer {
     public static final String MOD_ID = "xpbottlegrabbler";
 
-    public static final Item EXPERIENCE_BOTTLE_CUSTOM = Registry.register(
-            Registries.ITEM,
-            Identifier.of(MOD_ID, "experience_bottle_custom"),
-            new CustomExperienceBottleItem(new Item.Settings().maxCount(16))
-    );
-
     @Override
     public void onInitialize() {
+        UseItemCallback.EVENT.register((player, world, hand) -> {
+            ItemStack stack = player.getStackInHand(hand);
+
+            if (stack.isOf(Items.EXPERIENCE_BOTTLE) && !world.isClient()) {
+                NbtComponent nbtComponent = stack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT);
+                NbtCompound nbt = nbtComponent.copyNbt();
+
+                if (nbt.contains("StoredXp")) {
+                    int storedXp = nbt.getInt("StoredXp").orElse(0);
+
+                    if (storedXp > 0) {
+                        player.addExperience(storedXp);
+
+                        world.playSound(null, player.getX(), player.getY(), player.getZ(),
+                                SoundEvents.ENTITY_SPLASH_POTION_BREAK,
+                                SoundCategory.PLAYERS, 1.0f, 1.0f);
+
+                        stack.decrement(1);
+                        return ActionResult.SUCCESS;
+                    }
+                }
+            }
+
+            return ActionResult.PASS;
+        });
+
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
             dispatcher.register(CommandManager.literal("xpbottle")
                     .executes(context -> {
                         ServerPlayerEntity player = context.getSource().getPlayer();
                         if (player != null) {
-                            SimpleInventory inventory = new SimpleInventory(9);
-
-                            // Заполняем слоты визуальными предметами
-                            ItemStack collectBottle = new ItemStack(Items.EXPERIENCE_BOTTLE);
-                            collectBottle.setCustomName(Text.literal("§aСобрать опыт (10 XP)"));
-                            inventory.setStack(0, collectBottle);
-
-                            ItemStack bottle15 = new ItemStack(Items.EXPERIENCE_BOTTLE);
-                            bottle15.setCustomName(Text.literal("§6Уровень 15"));
-                            inventory.setStack(1, bottle15);
-
-                            ItemStack bottle30 = new ItemStack(Items.EXPERIENCE_BOTTLE);
-                            bottle30.setCustomName(Text.literal("§6Уровень 30"));
-                            inventory.setStack(2, bottle30);
-
-                            ItemStack bottle50 = new ItemStack(Items.EXPERIENCE_BOTTLE);
-                            bottle50.setCustomName(Text.literal("§6Уровень 50"));
-                            inventory.setStack(3, bottle50);
-
-                            ItemStack bottle100 = new ItemStack(Items.EXPERIENCE_BOTTLE);
-                            bottle100.setCustomName(Text.literal("§6Уровень 100"));
-                            inventory.setStack(4, bottle100);
-
                             player.openHandledScreen(new SimpleNamedScreenHandlerFactory(
                                     (syncId, playerInventory, playerEntity) ->
-                                            new ExperienceBottleScreenHandler(syncId, playerInventory, inventory),
+                                            new ExperienceBottleScreenHandler(syncId, playerInventory),
                                     Text.literal("Бутылочки опыта")
                             ));
                         }
