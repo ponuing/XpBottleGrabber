@@ -14,7 +14,6 @@ import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.Formatting;
 
 public class ExperienceBottleScreenHandler extends ScreenHandler {
     private final SimpleInventory buttonInventory;
