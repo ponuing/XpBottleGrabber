@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "id": "xpbottlegrabbler",
+  "version": "${version}",
+  "name": "XpBottleGrabbler",
+  "description": "re",
+  "authors": [],
+  "contact": {},
+  "license": "All-Rights-Reserved",
+  "icon": "assets/xpbottlegrabbler/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.battiboom1.xpbottlegrabbler.XpBottleGrabbler"
+    ]
+  },
+  "mixins": [
+    "xpbottlegrabbler.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}
