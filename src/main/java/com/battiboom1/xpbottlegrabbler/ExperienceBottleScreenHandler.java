@@ -217,7 +217,7 @@ public class ExperienceBottleScreenHandler extends ScreenHandler {
         if (totalXp < 10) {
             // Сообщение о недостатке опыта
             player.sendMessage(
-                    net.minecraft.text.Text.literal("§cНедостаточно опыта! Требуется: 10 XP, у вас: " + totalXp + " XP"),
+                    net.minecraft.text.Text.literal("§cНедостаточно опыта."),
                     false
             );
             return;
@@ -226,7 +226,7 @@ public class ExperienceBottleScreenHandler extends ScreenHandler {
         if (!hasEmptyBottle(player)) {
             // Сообщение о недостатке пустых бутылочек
             player.sendMessage(
-                    net.minecraft.text.Text.literal("§cНет пустых бутылочек!"),
+                    net.minecraft.text.Text.literal("§cНет пустых бутылочек в инвентаре."),
                     false
             );
             return;
@@ -255,7 +255,7 @@ public class ExperienceBottleScreenHandler extends ScreenHandler {
 
         if (totalXp < 10) {
             player.sendMessage(
-                    net.minecraft.text.Text.literal("§cНедостаточно опыта! Требуется минимум: 10 XP"),
+                    net.minecraft.text.Text.literal("§cНедостаточно опыта."),
                     false
             );
             return;
@@ -263,7 +263,7 @@ public class ExperienceBottleScreenHandler extends ScreenHandler {
 
         if (bottleCount == 0) {
             player.sendMessage(
-                    net.minecraft.text.Text.literal("§cНет пустых бутылочек!"),
+                    net.minecraft.text.Text.literal("§cНет пустых бутылочек в инвентаре."),
                     false
             );
             return;
@@ -296,7 +296,7 @@ public class ExperienceBottleScreenHandler extends ScreenHandler {
 
         if (playerTotalXp < requiredXp) {
             player.sendMessage(
-                    net.minecraft.text.Text.literal("§cНедостаточно опыта! Требуется: " + requiredXp + " XP, у вас: " + playerTotalXp + " XP"),
+                    net.minecraft.text.Text.literal("§cНедостаточно опыта."),
                     false
             );
             return;
