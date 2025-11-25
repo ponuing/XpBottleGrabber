@@ -71,7 +71,7 @@ public class ExperienceBottleScreenHandler extends ScreenHandler {
     }
 
     private void initializeButtons() {
-        ItemStack filler = new ItemStack(Items.GRAY_STAINED_GLASS_PANE);
+        ItemStack filler = new ItemStack(Items.LIGHT_GRAY_STAINED_GLASS_PANE);
         filler.set(DataComponentTypes.CUSTOM_NAME,
                 net.minecraft.text.Text.literal(" ")); // Пустое имя
 
