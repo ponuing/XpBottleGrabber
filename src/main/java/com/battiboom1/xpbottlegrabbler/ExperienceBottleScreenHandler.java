@@ -73,39 +73,39 @@ public class ExperienceBottleScreenHandler extends ScreenHandler {
     private void initializeButtons() {
         ItemStack filler = new ItemStack(Items.LIGHT_GRAY_STAINED_GLASS_PANE);
         filler.set(DataComponentTypes.CUSTOM_NAME,
-                net.minecraft.text.Text.literal(" ")); // Пустое имя
+                net.minecraft.text.Text.literal(" ")); // Empty name
 
         ItemStack button0 = new ItemStack(Items.EXPERIENCE_BOTTLE);
         button0.set(DataComponentTypes.CUSTOM_NAME,
-                net.minecraft.text.Text.literal("§a§lБутылочка опыта (10 XP)"));
+                net.minecraft.text.Text.literal("§a§lBottle o' Enchanting (10 XP)"));
         buttonInventory.setStack(0, button0);
 
         buttonInventory.setStack(1, filler.copy());
 
         ItemStack button1 = new ItemStack(Items.EXPERIENCE_BOTTLE);
         button1.set(DataComponentTypes.CUSTOM_NAME,
-                net.minecraft.text.Text.literal("§6§lУровень 15"));
+                net.minecraft.text.Text.literal("§6§lLVL 15"));
         buttonInventory.setStack(2, button1);
 
         buttonInventory.setStack(3, filler.copy());
 
         ItemStack button2 = new ItemStack(Items.EXPERIENCE_BOTTLE);
         button2.set(DataComponentTypes.CUSTOM_NAME,
-                net.minecraft.text.Text.literal("§6§lУровень 30"));
+                net.minecraft.text.Text.literal("§6§lLVL 30"));
         buttonInventory.setStack(4, button2);
 
         buttonInventory.setStack(5, filler.copy());
 
         ItemStack button3 = new ItemStack(Items.EXPERIENCE_BOTTLE);
         button3.set(DataComponentTypes.CUSTOM_NAME,
-                net.minecraft.text.Text.literal("§6§lУровень 50"));
+                net.minecraft.text.Text.literal("§6§lLVL 50"));
         buttonInventory.setStack(6, button3);
 
         buttonInventory.setStack(7, filler.copy());
 
         ItemStack button4 = new ItemStack(Items.EXPERIENCE_BOTTLE);
         button4.set(DataComponentTypes.CUSTOM_NAME,
-                net.minecraft.text.Text.literal("§6§lУровень 100"));
+                net.minecraft.text.Text.literal("§6§lLVL 100"));
         buttonInventory.setStack(8, button4);
     }
 
@@ -217,7 +217,7 @@ public class ExperienceBottleScreenHandler extends ScreenHandler {
         if (totalXp < 10) {
             // Сообщение о недостатке опыта
             player.sendMessage(
-                    net.minecraft.text.Text.literal("§cНедостаточно опыта."),
+                    net.minecraft.text.Text.literal("§cNot enough experience."),
                     false
             );
             return;
@@ -226,7 +226,7 @@ public class ExperienceBottleScreenHandler extends ScreenHandler {
         if (!hasEmptyBottle(player)) {
             // Сообщение о недостатке пустых бутылочек
             player.sendMessage(
-                    net.minecraft.text.Text.literal("§cНет пустых бутылочек в инвентаре."),
+                    net.minecraft.text.Text.literal("§cNo empty bottles in inventory."),
                     false
             );
             return;
@@ -241,7 +241,7 @@ public class ExperienceBottleScreenHandler extends ScreenHandler {
 
         // Сообщение об успешном создании
         player.sendMessage(
-                net.minecraft.text.Text.literal("§aСоздана бутылочка опыта! Потрачено: 10 XP"),
+                net.minecraft.text.Text.literal("§aBottle o' Enchanting created! 10 XP spent."),
                 false
         );
 
@@ -255,7 +255,7 @@ public class ExperienceBottleScreenHandler extends ScreenHandler {
 
         if (totalXp < 10) {
             player.sendMessage(
-                    net.minecraft.text.Text.literal("§cНедостаточно опыта."),
+                    net.minecraft.text.Text.literal("§cNot enough experience."),
                     false
             );
             return;
@@ -263,7 +263,7 @@ public class ExperienceBottleScreenHandler extends ScreenHandler {
 
         if (bottleCount == 0) {
             player.sendMessage(
-                    net.minecraft.text.Text.literal("§cНет пустых бутылочек в инвентаре."),
+                    net.minecraft.text.Text.literal("§cNo empty bottles in inventory."),
                     false
             );
             return;
@@ -281,7 +281,7 @@ public class ExperienceBottleScreenHandler extends ScreenHandler {
             addExperience(player, -maxBottles * 10);
 
             player.sendMessage(
-                    net.minecraft.text.Text.literal("§aСоздано бутылочек: " + maxBottles + "! Потрачено: " + (maxBottles * 10) + " XP"),
+                    net.minecraft.text.Text.literal("§aBottles created: " + maxBottles + "! Spent: " + (maxBottles * 10) + " XP"),
                     false
             );
 
@@ -296,7 +296,7 @@ public class ExperienceBottleScreenHandler extends ScreenHandler {
 
         if (playerTotalXp < requiredXp) {
             player.sendMessage(
-                    net.minecraft.text.Text.literal("§cНедостаточно опыта."),
+                    net.minecraft.text.Text.literal("§cNot enough experience."),
                     false
             );
             return;
@@ -304,7 +304,7 @@ public class ExperienceBottleScreenHandler extends ScreenHandler {
 
         if (!hasEmptyBottle(player)) {
             player.sendMessage(
-                    net.minecraft.text.Text.literal("§cНет пустых бутылочек в инвентаре."),
+                    net.minecraft.text.Text.literal("§cNo empty bottles in inventory."),
                     false
             );
             return;
@@ -320,13 +320,13 @@ public class ExperienceBottleScreenHandler extends ScreenHandler {
         bottle.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(nbt));
 
         bottle.set(DataComponentTypes.ITEM_NAME,
-                net.minecraft.text.Text.literal("§6§lБутылочка опыта (Ур. " + level + ")"));
+                net.minecraft.text.Text.literal("§6§lBottle o' Enchanting (LVL. " + level + ")"));
 
         giveOrDropItem(player, bottle);
         addExperience(player, -requiredXp);
 
         player.sendMessage(
-                net.minecraft.text.Text.literal("§aСоздана бутылочка уровня " + level + "."),
+                net.minecraft.text.Text.literal("§aLevel bottle created. Level " + level + "."),
                 false
         );
 
@@ -341,7 +341,7 @@ public class ExperienceBottleScreenHandler extends ScreenHandler {
 
         if (playerTotalXp < requiredXp) {
             player.sendMessage(
-                    net.minecraft.text.Text.literal("§cНедостаточно опыта."),
+                    net.minecraft.text.Text.literal("§cNot enough experience."),
                     false
             );
             return;
@@ -349,7 +349,7 @@ public class ExperienceBottleScreenHandler extends ScreenHandler {
 
         if (bottleCount == 0) {
             player.sendMessage(
-                    net.minecraft.text.Text.literal("§cНет пустых бутылочек в инвентаре."),
+                    net.minecraft.text.Text.literal("§cNo empty bottles in inventory."),
                     false
             );
             return;
@@ -369,7 +369,7 @@ public class ExperienceBottleScreenHandler extends ScreenHandler {
                 bottle.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(nbt));
 
                 bottle.set(DataComponentTypes.ITEM_NAME,
-                        net.minecraft.text.Text.literal("§6§lБутылочка опыта (Ур. " + level + ")"));
+                        net.minecraft.text.Text.literal("§6§lBottle o' Enchanting (LVL. " + level + ")"));
 
                 giveOrDropItem(player, bottle);
             }
@@ -377,7 +377,7 @@ public class ExperienceBottleScreenHandler extends ScreenHandler {
             addExperience(player, -maxBottles * requiredXp);
 
             player.sendMessage(
-                    net.minecraft.text.Text.literal("§aСоздано бутылочек уровня " + level + ": §l" + maxBottles + "."),
+                    net.minecraft.text.Text.literal("§aLevel bottle created. Level " + level + ": §lCount" + maxBottles + "."),
                     false
             );
 

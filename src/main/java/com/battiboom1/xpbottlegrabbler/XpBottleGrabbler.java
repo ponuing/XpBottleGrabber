@@ -17,8 +17,6 @@ import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 
 public class XpBottleGrabbler implements ModInitializer {
-    public static final String MOD_ID = "xpbottlegrabbler";
-
     @Override
     public void onInitialize() {
         UseItemCallback.EVENT.register((player, world, hand) -> {
@@ -55,7 +53,7 @@ public class XpBottleGrabbler implements ModInitializer {
                             player.openHandledScreen(new SimpleNamedScreenHandlerFactory(
                                     (syncId, playerInventory, playerEntity) ->
                                             new ExperienceBottleScreenHandler(syncId, playerInventory),
-                                    Text.literal("Бутылочки опыта")
+                                    Text.literal("Bottles of experience")
                             ));
                         }
                         return 1;
