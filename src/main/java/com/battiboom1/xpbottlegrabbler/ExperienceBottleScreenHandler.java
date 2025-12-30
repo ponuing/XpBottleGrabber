@@ -377,7 +377,7 @@ public class ExperienceBottleScreenHandler extends ScreenHandler {
             addExperience(player, -maxBottles * requiredXp);
 
             player.sendMessage(
-                    net.minecraft.text.Text.literal("§aLevel bottle created. Level " + level + ": §lCount" + maxBottles + "."),
+                    net.minecraft.text.Text.literal("§aLevel bottle created. Level " + level + ": §lCount " + maxBottles + "."),
                     false
             );
 
