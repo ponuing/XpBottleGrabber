@@ -214,16 +214,14 @@ public class ExperienceBottleScreenHandler extends AbstractContainerMenu {
     private void collectExperience(Player player) {
         int totalXp = getTotalExperience(player);
 
+        // Message of not enough experience or bottles
         if (totalXp < 10) {
-            // Сообщение о недостатке опыта
             player.sendSystemMessage(
                     net.minecraft.network.chat.Component.literal("§cNot enough experience.")
             );
             return;
         }
-
         if (!hasEmptyBottle(player)) {
-            // Сообщение о недостатке пустых бутылочек
             player.sendSystemMessage(
                     net.minecraft.network.chat.Component.literal("§cNo empty bottles in inventory.")
             );
@@ -237,7 +235,7 @@ public class ExperienceBottleScreenHandler extends AbstractContainerMenu {
 
         addExperience(player, -10);
 
-        // Сообщение об успешном создании
+        // Successful creation bottles message
         player.sendSystemMessage(
                 net.minecraft.network.chat.Component.literal("§aBottle o' Enchanting created! 10 XP spent.")
         );

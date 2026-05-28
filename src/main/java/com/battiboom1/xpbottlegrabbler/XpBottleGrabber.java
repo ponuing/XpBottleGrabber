@@ -16,7 +16,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.CustomData;
 
-public class XpBottleGrabbler implements ModInitializer {
+public class XpBottleGrabber implements ModInitializer {
     @Override
     public void onInitialize() {
         UseItemCallback.EVENT.register((player, world, hand) -> {

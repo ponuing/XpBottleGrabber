@@ -1,17 +1,17 @@
 {
   "schemaVersion": 1,
-  "id": "xpbottlegrabbler",
+  "id": "xpbottlegrabber",
   "version": "${version}",
-  "name": "XpBottleGrabbler",
+  "name": "XpBottle Grabber",
   "description": "re",
   "authors": [],
   "contact": {},
   "license": "All-Rights-Reserved",
-  "icon": "assets/xpbottlegrabbler/icon.png",
+  "icon": "icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [
-      "com.battiboom1.xpbottlegrabbler.XpBottleGrabbler"
+      "com.battiboom1.xpbottlegrabbler.XpBottleGrabber"
     ]
   },
   "depends": {
