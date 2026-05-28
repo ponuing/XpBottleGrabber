@@ -1,4 +1,4 @@
-package com.battiboom1.xpbottlegrabbler;
+package com.ponuing.xpbottlegrabbler;
 
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;

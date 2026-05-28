@@ -1,6 +1,11 @@
+import com.ponuing.GenerateChangelogTask
+import com.ponuing.UpdateDependenciesTask
+
 plugins {
     id 'net.fabricmc.fabric-loom' version '1.16-SNAPSHOT'
     id 'maven-publish'
+    id 'com.github.breadmoirai.github-release' version '2.5.2'
+    id "me.modmuss50.mod-publish-plugin" version "1.1.0"
 }
 
 version = project.mod_version
@@ -68,12 +73,42 @@ jar {
     }
 }
 
+tasks.register("updateModDependencies", UpdateDependenciesTask) {
+    mcVersion.set(project.property("minecraft_version").toString())
+    loader.set("fabric")
+}
+
+def canPublish = System.getenv("RELEASE")?.toBoolean() ?: false
+
 // configure the maven publication
 publishing {
     publications {
         create("mavenJava", MavenPublication) {
             artifactId = project.archives_base_name
             from components.java
+
+            pom {
+                name = "XpBottle Grabber"
+                description = "A server side mod for collecting experience in bottles for Fabric ${project.minecraft_version}."
+                url = "https://github.com/ponuing/XpBottleGrabber"
+                licenses {
+                    license {
+                        name = "MIT"
+                        url = "https://opensource.org/license/mit"
+                    }
+                }
+                developers {
+                    developer {
+                        name = "ponuing"
+                        url = "https://github.com/ponuing/XpBottleGrabber"
+                    }
+                }
+                scm {
+                    connection = "scm:git:git://github.com/ponuing/XpBottleGrabber.git"
+                    developerConnection = "scm:git:git://github.com/ponuing/XpBottleGrabber.git"
+                    url = "https://github.com/ponuing/XpBottleGrabber"
+                }
+            }
         }
     }
 
@@ -83,5 +118,115 @@ publishing {
         // Notice: This block does NOT have the same function as the block in the top level.
         // The repositories here will be used for publishing your artifact, not for
         // retrieving dependencies.
+        if (!System.getenv().containsKey("CI")) {
+            mavenLocal()
+        }
+
+        if (canPublish) {
+            maven {
+                name = "GitHubPackages"
+                url = uri("https://maven.pkg.github.com/ponuing/CIT-Reborn")
+                credentials {
+                    username = System.getenv("GITHUB_ACTOR")
+                    password = System.getenv("GITHUB_TOKEN")
+                }
+            }
+        }
+    }
+}
+def lastTagEnv = System.getenv("PREVIOUS_TAG")
+def lastTagValue = (lastTagEnv == null || lastTagEnv == "NONE") ? null : lastTagEnv
+def newTagValue = System.getenv("NEW_TAG") ?: "v${project.version}"
+if (canPublish) {
+    def releaseTypeName = project.property("release_type") == "release"
+            ? "STABLE"
+            : project.property("release_type") == "beta"
+            ? "BETA"
+            : "ALPHA"
+
+    TaskProvider<GenerateChangelogTask> generateChangelogTask = null
+
+    if (lastTagValue != null) {
+        def changelogHeader = null
+        def addonProp = project.findProperty("changelogHeaderAddon")?.toString()
+        if (addonProp != null && !addonProp.isBlank()) {
+            changelogHeader = addonProp
+        }
+
+        def changelogFile = rootProject.file("changelogs/${project.property("mod_version")}.md")
+        def changelogFileText = changelogFile.exists() ? changelogFile.text : null
+
+        generateChangelogTask = tasks.register("generateChangelog", GenerateChangelogTask) {
+            lastTag.set(lastTagValue)
+            newTag.set(newTagValue)
+            githubUrl.set("https://github.com/ponuing/CIT-Reborn")
+            prefixFilters.set(project.property("changelog_filter").toString().split(",") as List)
+
+            prologue.set([changelogHeader, changelogFileText].findAll { it != null }.join("\n\n"))
+        }
+    }
+
+    def changelogTextProvider = generateChangelogTask != null
+            ? providers.provider { generateChangelogTask.get().changelogFile.get().asFile.text }
+            : providers.provider { "No Changelog Generated" }
+
+    tasks.named("githubRelease").configure {
+        if (generateChangelogTask != null) {
+            dependsOn(generateChangelogTask)
+        }
+
+        authorization = System.getenv("GITHUB_TOKEN")?.with { "Bearer $it" }
+        owner = project.property("github_owner").toString()
+        repo = project.property("github_repo").toString()
+        tagName = newTagValue
+        releaseName = "${project.property("mod_name")} $newTagValue"
+        targetCommitish = System.getenv("GITHUB_REF_NAME") ?: "HEAD"
+        releaseAssets.from(
+                tasks.named("remapJar").get().outputs.files,
+                tasks.named("remapSourcesJar").get().outputs.files,
+        )
+        subprojects.forEach {
+            releaseAssets.from(
+                    it.tasks.named("remapJar").get().outputs.files,
+                    it.tasks.named("remapSourcesJar").get().outputs.files,
+            )
+        }
+
+        body = changelogTextProvider
+    }
+
+    if (["CURSEFORGE_TOKEN", "MODRINTH_TOKEN"].any { System.getenv().containsKey(it) }) {
+        publishMods {
+            changelog = changelogTextProvider
+            def enumValue = type.getType().enumConstants.find { it.name() == releaseTypeName }
+            type.set(enumValue)
+            modLoaders.add("fabric")
+            modLoaders.add("quilt")
+            file = tasks.named("remapJar").flatMap { it.archiveFile }
+
+            if (System.getenv().containsKey("CURSEFORGE_TOKEN") || dryRun.get()) {
+                curseforge {
+                    projectId = "1485026"
+                    accessToken = providers.environmentVariable("CURSEFORGE_TOKEN")
+                    project.property("game_versions_curse").toString().split(",").each {
+                        minecraftVersions.add(it)
+                    }
+                    displayName.set("${project.property("prefix")} ${project.property("mod_name")} ${project.version}")
+                    requires("fabric-api")
+                }
+            }
+
+            if (System.getenv().containsKey("MODRINTH_TOKEN") || dryRun.get()) {
+                modrinth {
+                    accessToken = providers.environmentVariable("MODRINTH_TOKEN")
+                    projectId = "3xbZC1Fh"
+                    project.property("game_versions_mr").toString().split(",").each {
+                        minecraftVersions.add(it)
+                    }
+                    displayName.set("${project.property("mod_name")} ${project.version}")
+                    requires("fabric-api")
+                }
+            }
+        }
     }
 }

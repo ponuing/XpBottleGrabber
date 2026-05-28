@@ -1,4 +1,4 @@
-package com.battiboom1.xpbottlegrabbler;
+package com.ponuing.xpbottlegrabbler;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;

@@ -6,12 +6,12 @@
   "description": "re",
   "authors": [],
   "contact": {},
-  "license": "All-Rights-Reserved",
+  "license": "LGPL-3.0",
   "icon": "icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [
-      "com.battiboom1.xpbottlegrabbler.XpBottleGrabber"
+      "com.ponuing.xpbottlegrabbler.XpBottleGrabber"
     ]
   },
   "depends": {
