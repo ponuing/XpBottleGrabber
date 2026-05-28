@@ -3,57 +3,57 @@ package com.battiboom1.xpbottlegrabbler;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.NbtComponent;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.screen.SimpleNamedScreenHandlerFactory;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
+import net.minecraft.commands.Commands;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.SimpleMenuProvider;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.CustomData;
 
 public class XpBottleGrabbler implements ModInitializer {
     @Override
     public void onInitialize() {
         UseItemCallback.EVENT.register((player, world, hand) -> {
-            ItemStack stack = player.getStackInHand(hand);
+            ItemStack stack = player.getItemInHand(hand);
 
-            if (stack.isOf(Items.EXPERIENCE_BOTTLE) && !world.isClient()) {
-                NbtComponent nbtComponent = stack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT);
-                NbtCompound nbt = nbtComponent.copyNbt();
+            if (stack.is(Items.EXPERIENCE_BOTTLE) && !world.isClientSide()) {
+                CustomData nbtComponent = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY);
+                CompoundTag nbt = nbtComponent.copyTag();
 
                 if (nbt.contains("StoredXp")) {
                     int storedXp = nbt.getInt("StoredXp").orElse(0);
 
                     if (storedXp > 0) {
-                        player.addExperience(storedXp);
+                        player.giveExperiencePoints(storedXp);
 
                         world.playSound(null, player.getX(), player.getY(), player.getZ(),
-                                SoundEvents.ENTITY_SPLASH_POTION_BREAK,
-                                SoundCategory.PLAYERS, 1.0f, 1.0f);
+                                SoundEvents.SPLASH_POTION_BREAK,
+                                SoundSource.PLAYERS, 1.0f, 1.0f);
 
-                        stack.decrement(1);
-                        return ActionResult.SUCCESS;
+                        stack.shrink(1);
+                        return InteractionResult.SUCCESS;
                     }
                 }
             }
 
-            return ActionResult.PASS;
+            return InteractionResult.PASS;
         });
 
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
-            dispatcher.register(CommandManager.literal("xpbottle")
+            dispatcher.register(Commands.literal("xpbottle")
                     .executes(context -> {
-                        ServerPlayerEntity player = context.getSource().getPlayer();
+                        ServerPlayer player = context.getSource().getPlayer();
                         if (player != null) {
-                            player.openHandledScreen(new SimpleNamedScreenHandlerFactory(
+                            player.openMenu(new SimpleMenuProvider(
                                     (syncId, playerInventory, playerEntity) ->
                                             new ExperienceBottleScreenHandler(syncId, playerInventory),
-                                    Text.literal("Bottles of experience")
+                                    Component.literal("Bottles of experience")
                             ));
                         }
                         return 1;

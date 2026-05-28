@@ -1,35 +1,35 @@
 package com.battiboom1.xpbottlegrabbler;
 
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.NbtComponent;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.SimpleInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.screen.slot.SlotActionType;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerInput;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.CustomData;
 
-public class ExperienceBottleScreenHandler extends ScreenHandler {
-    private final SimpleInventory buttonInventory;
-    private final PlayerInventory playerInventory;
+public class ExperienceBottleScreenHandler extends AbstractContainerMenu {
+    private final SimpleContainer buttonInventory;
+    private final Inventory playerInventory;
 
-    public ExperienceBottleScreenHandler(int syncId, PlayerInventory playerInventory) {
-        super(ScreenHandlerType.GENERIC_9X1, syncId);
+    public ExperienceBottleScreenHandler(int syncId, Inventory playerInventory) {
+        super(MenuType.GENERIC_9x1, syncId);
         this.playerInventory = playerInventory;
 
-        this.buttonInventory = new SimpleInventory(9) {
+        this.buttonInventory = new SimpleContainer(9) {
             @Override
-            public void markDirty() {
+            public void setChanged() {
             }
 
             @Override
-            public boolean canPlayerUse(PlayerEntity player) {
+            public boolean stillValid(Player player) {
                 return true;
             }
         };
@@ -39,22 +39,22 @@ public class ExperienceBottleScreenHandler extends ScreenHandler {
         for (int i = 0; i < 9; i++) {
             this.addSlot(new Slot(buttonInventory, i, 8 + i * 18, 20) {
                 @Override
-                public boolean canInsert(ItemStack stack) {
+                public boolean mayPlace(ItemStack stack) {
                     return false;
                 }
 
                 @Override
-                public boolean canTakeItems(PlayerEntity playerEntity) {
+                public boolean mayPickup(Player playerEntity) {
                     return false;
                 }
 
                 @Override
-                public ItemStack takeStack(int amount) {
+                public ItemStack remove(int amount) {
                     return ItemStack.EMPTY;
                 }
 
                 @Override
-                public void setStack(ItemStack stack) {
+                public void setByPlayer(ItemStack stack) {
                 }
             });
         }
@@ -72,92 +72,92 @@ public class ExperienceBottleScreenHandler extends ScreenHandler {
 
     private void initializeButtons() {
         ItemStack filler = new ItemStack(Items.LIGHT_GRAY_STAINED_GLASS_PANE);
-        filler.set(DataComponentTypes.CUSTOM_NAME,
-                net.minecraft.text.Text.literal(" ")); // Empty name
+        filler.set(DataComponents.CUSTOM_NAME,
+                net.minecraft.network.chat.Component.literal(" ")); // Empty name
 
         ItemStack button0 = new ItemStack(Items.EXPERIENCE_BOTTLE);
-        button0.set(DataComponentTypes.CUSTOM_NAME,
-                net.minecraft.text.Text.literal("§a§lBottle o' Enchanting (10 XP)"));
-        buttonInventory.setStack(0, button0);
+        button0.set(DataComponents.CUSTOM_NAME,
+                net.minecraft.network.chat.Component.literal("§a§lBottle o' Enchanting (10 XP)"));
+        buttonInventory.setItem(0, button0);
 
-        buttonInventory.setStack(1, filler.copy());
+        buttonInventory.setItem(1, filler.copy());
 
         ItemStack button1 = new ItemStack(Items.EXPERIENCE_BOTTLE);
-        button1.set(DataComponentTypes.CUSTOM_NAME,
-                net.minecraft.text.Text.literal("§6§lLVL 15"));
-        buttonInventory.setStack(2, button1);
+        button1.set(DataComponents.CUSTOM_NAME,
+                net.minecraft.network.chat.Component.literal("§6§lLVL 15"));
+        buttonInventory.setItem(2, button1);
 
-        buttonInventory.setStack(3, filler.copy());
+        buttonInventory.setItem(3, filler.copy());
 
         ItemStack button2 = new ItemStack(Items.EXPERIENCE_BOTTLE);
-        button2.set(DataComponentTypes.CUSTOM_NAME,
-                net.minecraft.text.Text.literal("§6§lLVL 30"));
-        buttonInventory.setStack(4, button2);
+        button2.set(DataComponents.CUSTOM_NAME,
+                net.minecraft.network.chat.Component.literal("§6§lLVL 30"));
+        buttonInventory.setItem(4, button2);
 
-        buttonInventory.setStack(5, filler.copy());
+        buttonInventory.setItem(5, filler.copy());
 
         ItemStack button3 = new ItemStack(Items.EXPERIENCE_BOTTLE);
-        button3.set(DataComponentTypes.CUSTOM_NAME,
-                net.minecraft.text.Text.literal("§6§lLVL 50"));
-        buttonInventory.setStack(6, button3);
+        button3.set(DataComponents.CUSTOM_NAME,
+                net.minecraft.network.chat.Component.literal("§6§lLVL 50"));
+        buttonInventory.setItem(6, button3);
 
-        buttonInventory.setStack(7, filler.copy());
+        buttonInventory.setItem(7, filler.copy());
 
         ItemStack button4 = new ItemStack(Items.EXPERIENCE_BOTTLE);
-        button4.set(DataComponentTypes.CUSTOM_NAME,
-                net.minecraft.text.Text.literal("§6§lLVL 100"));
-        buttonInventory.setStack(8, button4);
+        button4.set(DataComponents.CUSTOM_NAME,
+                net.minecraft.network.chat.Component.literal("§6§lLVL 100"));
+        buttonInventory.setItem(8, button4);
     }
 
     @Override
-    public ItemStack quickMove(PlayerEntity player, int slotIndex) {
+    public ItemStack quickMoveStack(Player player, int slotIndex) {
         if (slotIndex < 9) {
             return ItemStack.EMPTY;
         }
 
         Slot slot = this.slots.get(slotIndex);
-        if (slot == null || !slot.hasStack()) {
+        if (slot == null || !slot.hasItem()) {
             return ItemStack.EMPTY;
         }
 
-        ItemStack stackInSlot = slot.getStack();
+        ItemStack stackInSlot = slot.getItem();
         ItemStack originalStack = stackInSlot.copy();
 
         if (slotIndex >= 9 && slotIndex < 36) {
-            if (!this.insertItem(stackInSlot, 36, 45, false)) {
+            if (!this.moveItemStackTo(stackInSlot, 36, 45, false)) {
                 return ItemStack.EMPTY;
             }
         } else if (slotIndex >= 36 && slotIndex < 45) {
-            if (!this.insertItem(stackInSlot, 9, 36, false)) {
+            if (!this.moveItemStackTo(stackInSlot, 9, 36, false)) {
                 return ItemStack.EMPTY;
             }
         }
 
         if (stackInSlot.isEmpty()) {
-            slot.setStack(ItemStack.EMPTY);
+            slot.setByPlayer(ItemStack.EMPTY);
         } else {
-            slot.markDirty();
+            slot.setChanged();
         }
 
         if (stackInSlot.getCount() == originalStack.getCount()) {
             return ItemStack.EMPTY;
         }
 
-        slot.onTakeItem(player, stackInSlot);
+        slot.onTake(player, stackInSlot);
         return originalStack;
     }
 
     @Override
-    public boolean canUse(PlayerEntity player) {
+    public boolean stillValid(Player player) {
         return true;
     }
 
     @Override
-    public void onSlotClick(int slotIndex, int button, SlotActionType actionType, PlayerEntity player) {
+    public void clicked(int slotIndex, int button, ContainerInput actionType, Player player) {
         if (slotIndex == 0 || slotIndex == 2 || slotIndex == 4 || slotIndex == 6 || slotIndex == 8) {
-            if (actionType == SlotActionType.PICKUP || actionType == SlotActionType.QUICK_MOVE) {
-                if (!player.getEntityWorld().isClient()) {
-                    boolean isShiftDown = (actionType == SlotActionType.QUICK_MOVE);
+            if (actionType == ContainerInput.PICKUP || actionType == ContainerInput.QUICK_MOVE) {
+                if (!player.level().isClientSide()) {
+                    boolean isShiftDown = (actionType == ContainerInput.QUICK_MOVE);
                     handleBottleClick(player, slotIndex, isShiftDown);
                 }
             }
@@ -168,10 +168,10 @@ public class ExperienceBottleScreenHandler extends ScreenHandler {
             return;
         }
 
-        super.onSlotClick(slotIndex, button, actionType, player);
+        super.clicked(slotIndex, button, actionType, player);
     }
 
-    private void handleBottleClick(PlayerEntity player, int slot, boolean craftMax) {
+    private void handleBottleClick(Player player, int slot, boolean craftMax) {
         switch (slot) {
             case 0:
                 if (craftMax) {
@@ -211,23 +211,21 @@ public class ExperienceBottleScreenHandler extends ScreenHandler {
         }
     }
 
-    private void collectExperience(PlayerEntity player) {
+    private void collectExperience(Player player) {
         int totalXp = getTotalExperience(player);
 
         if (totalXp < 10) {
             // Сообщение о недостатке опыта
-            player.sendMessage(
-                    net.minecraft.text.Text.literal("§cNot enough experience."),
-                    false
+            player.sendSystemMessage(
+                    net.minecraft.network.chat.Component.literal("§cNot enough experience.")
             );
             return;
         }
 
         if (!hasEmptyBottle(player)) {
             // Сообщение о недостатке пустых бутылочек
-            player.sendMessage(
-                    net.minecraft.text.Text.literal("§cNo empty bottles in inventory."),
-                    false
+            player.sendSystemMessage(
+                    net.minecraft.network.chat.Component.literal("§cNo empty bottles in inventory.")
             );
             return;
         }
@@ -240,31 +238,28 @@ public class ExperienceBottleScreenHandler extends ScreenHandler {
         addExperience(player, -10);
 
         // Сообщение об успешном создании
-        player.sendMessage(
-                net.minecraft.text.Text.literal("§aBottle o' Enchanting created! 10 XP spent."),
-                false
+        player.sendSystemMessage(
+                net.minecraft.network.chat.Component.literal("§aBottle o' Enchanting created! 10 XP spent.")
         );
 
-        player.getEntityWorld().playSound(null, player.getX(), player.getY(), player.getZ(),
-                SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.5f, 1.0f);
+        player.level().playSound(null, player.getX(), player.getY(), player.getZ(),
+                SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.5f, 1.0f);
     }
 
-    private void collectExperienceMax(PlayerEntity player) {
+    private void collectExperienceMax(Player player) {
         int totalXp = getTotalExperience(player);
         int bottleCount = countEmptyBottles(player);
 
         if (totalXp < 10) {
-            player.sendMessage(
-                    net.minecraft.text.Text.literal("§cNot enough experience."),
-                    false
+            player.sendSystemMessage(
+                    net.minecraft.network.chat.Component.literal("§cNot enough experience.")
             );
             return;
         }
 
         if (bottleCount == 0) {
-            player.sendMessage(
-                    net.minecraft.text.Text.literal("§cNo empty bottles in inventory."),
-                    false
+            player.sendSystemMessage(
+                    net.minecraft.network.chat.Component.literal("§cNo empty bottles in inventory.")
             );
             return;
         }
@@ -280,32 +275,29 @@ public class ExperienceBottleScreenHandler extends ScreenHandler {
 
             addExperience(player, -maxBottles * 10);
 
-            player.sendMessage(
-                    net.minecraft.text.Text.literal("§aBottles created: " + maxBottles + "! Spent: " + (maxBottles * 10) + " XP"),
-                    false
+            player.sendSystemMessage(
+                    net.minecraft.network.chat.Component.literal("§aBottles created: " + maxBottles + "! Spent: " + (maxBottles * 10) + " XP")
             );
 
-            player.getEntityWorld().playSound(null, player.getX(), player.getY(), player.getZ(),
-                    SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.5f, 1.0f);
+            player.level().playSound(null, player.getX(), player.getY(), player.getZ(),
+                    SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.5f, 1.0f);
         }
     }
 
-    private void createBottleWithLevel(PlayerEntity player, int level) {
+    private void createBottleWithLevel(Player player, int level) {
         int requiredXp = getXpForLevel(level);
         int playerTotalXp = getTotalExperience(player);
 
         if (playerTotalXp < requiredXp) {
-            player.sendMessage(
-                    net.minecraft.text.Text.literal("§cNot enough experience."),
-                    false
+            player.sendSystemMessage(
+                    net.minecraft.network.chat.Component.literal("§cNot enough experience.")
             );
             return;
         }
 
         if (!hasEmptyBottle(player)) {
-            player.sendMessage(
-                    net.minecraft.text.Text.literal("§cNo empty bottles in inventory."),
-                    false
+            player.sendSystemMessage(
+                    net.minecraft.network.chat.Component.literal("§cNo empty bottles in inventory.")
             );
             return;
         }
@@ -314,43 +306,40 @@ public class ExperienceBottleScreenHandler extends ScreenHandler {
 
         ItemStack bottle = new ItemStack(Items.EXPERIENCE_BOTTLE);
 
-        NbtCompound nbt = new NbtCompound();
+        CompoundTag nbt = new CompoundTag();
         nbt.putInt("StoredLevel", level);
         nbt.putInt("StoredXp", requiredXp);
-        bottle.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(nbt));
+        bottle.set(DataComponents.CUSTOM_DATA, CustomData.of(nbt));
 
-        bottle.set(DataComponentTypes.ITEM_NAME,
-                net.minecraft.text.Text.literal("§6§lBottle o' Enchanting (LVL. " + level + ")"));
+        bottle.set(DataComponents.ITEM_NAME,
+                net.minecraft.network.chat.Component.literal("§6§lBottle o' Enchanting (LVL. " + level + ")"));
 
         giveOrDropItem(player, bottle);
         addExperience(player, -requiredXp);
 
-        player.sendMessage(
-                net.minecraft.text.Text.literal("§aLevel bottle created. Level " + level + "."),
-                false
+        player.sendSystemMessage(
+                net.minecraft.network.chat.Component.literal("§aLevel bottle created. Level " + level + ".")
         );
 
-        player.getEntityWorld().playSound(null, player.getX(), player.getY(), player.getZ(),
-                SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 1.0f, 1.0f);
+        player.level().playSound(null, player.getX(), player.getY(), player.getZ(),
+                SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 1.0f, 1.0f);
     }
 
-    private void createBottleWithLevelMax(PlayerEntity player, int level) {
+    private void createBottleWithLevelMax(Player player, int level) {
         int requiredXp = getXpForLevel(level);
         int playerTotalXp = getTotalExperience(player);
         int bottleCount = countEmptyBottles(player);
 
         if (playerTotalXp < requiredXp) {
-            player.sendMessage(
-                    net.minecraft.text.Text.literal("§cNot enough experience."),
-                    false
+            player.sendSystemMessage(
+                    net.minecraft.network.chat.Component.literal("§cNot enough experience.")
             );
             return;
         }
 
         if (bottleCount == 0) {
-            player.sendMessage(
-                    net.minecraft.text.Text.literal("§cNo empty bottles in inventory."),
-                    false
+            player.sendSystemMessage(
+                    net.minecraft.network.chat.Component.literal("§cNo empty bottles in inventory.")
             );
             return;
         }
@@ -363,61 +352,60 @@ public class ExperienceBottleScreenHandler extends ScreenHandler {
 
                 ItemStack bottle = new ItemStack(Items.EXPERIENCE_BOTTLE);
 
-                NbtCompound nbt = new NbtCompound();
+                CompoundTag nbt = new CompoundTag();
                 nbt.putInt("StoredLevel", level);
                 nbt.putInt("StoredXp", requiredXp);
-                bottle.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(nbt));
+                bottle.set(DataComponents.CUSTOM_DATA, CustomData.of(nbt));
 
-                bottle.set(DataComponentTypes.ITEM_NAME,
-                        net.minecraft.text.Text.literal("§6§lBottle o' Enchanting (LVL. " + level + ")"));
+                bottle.set(DataComponents.ITEM_NAME,
+                        net.minecraft.network.chat.Component.literal("§6§lBottle o' Enchanting (LVL. " + level + ")"));
 
                 giveOrDropItem(player, bottle);
             }
 
             addExperience(player, -maxBottles * requiredXp);
 
-            player.sendMessage(
-                    net.minecraft.text.Text.literal("§aLevel bottle created. Level " + level + ": §lCount " + maxBottles + "."),
-                    false
+            player.sendSystemMessage(
+                    net.minecraft.network.chat.Component.literal("§aLevel bottle created. Level " + level + ": §lCount " + maxBottles + ".")
             );
 
-            player.getEntityWorld().playSound(null, player.getX(), player.getY(), player.getZ(),
-                    SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 1.0f, 1.0f);
+            player.level().playSound(null, player.getX(), player.getY(), player.getZ(),
+                    SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 1.0f, 1.0f);
         }
     }
 
-    private boolean hasEmptyBottle(PlayerEntity player) {
+    private boolean hasEmptyBottle(Player player) {
         return countEmptyBottles(player) > 0;
     }
 
-    private int countEmptyBottles(PlayerEntity player) {
+    private int countEmptyBottles(Player player) {
         int count = 0;
-        for (int i = 0; i < playerInventory.size(); i++) {
-            ItemStack stack = playerInventory.getStack(i);
-            if (stack.isOf(Items.GLASS_BOTTLE)) {
+        for (int i = 0; i < playerInventory.getContainerSize(); i++) {
+            ItemStack stack = playerInventory.getItem(i);
+            if (stack.is(Items.GLASS_BOTTLE)) {
                 count += stack.getCount();
             }
         }
         return count;
     }
 
-    private void removeEmptyBottle(PlayerEntity player) {
-        for (int i = 0; i < playerInventory.size(); i++) {
-            ItemStack stack = playerInventory.getStack(i);
-            if (stack.isOf(Items.GLASS_BOTTLE)) {
-                stack.decrement(1);
+    private void removeEmptyBottle(Player player) {
+        for (int i = 0; i < playerInventory.getContainerSize(); i++) {
+            ItemStack stack = playerInventory.getItem(i);
+            if (stack.is(Items.GLASS_BOTTLE)) {
+                stack.shrink(1);
                 break;
             }
         }
     }
 
-    private void giveOrDropItem(PlayerEntity player, ItemStack stack) {
-        if (!playerInventory.insertStack(stack)) {
-            player.dropItem(stack, false);
+    private void giveOrDropItem(Player player, ItemStack stack) {
+        if (!playerInventory.add(stack)) {
+            player.drop(stack, false);
         }
     }
 
-    private int getTotalExperience(PlayerEntity player) {
+    private int getTotalExperience(Player player) {
         int total = 0;
         int level = player.experienceLevel;
 
@@ -429,11 +417,11 @@ public class ExperienceBottleScreenHandler extends ScreenHandler {
             total = (int) (4.5 * Math.pow(level, 2) - 162.5 * level + 2220);
         }
 
-        total += Math.round(player.experienceProgress * player.getNextLevelExperience());
+        total += Math.round(player.experienceProgress * player.getXpNeededForNextLevel());
         return total;
     }
 
-    private void addExperience(PlayerEntity player, int xp) {
+    private void addExperience(Player player, int xp) {
         int currentTotal = getTotalExperience(player);
         int newTotal = Math.max(0, currentTotal + xp);
 
@@ -441,7 +429,7 @@ public class ExperienceBottleScreenHandler extends ScreenHandler {
         player.experienceProgress = 0;
         player.totalExperience = 0;
 
-        player.addExperience(newTotal);
+        player.giveExperiencePoints(newTotal);
     }
 
     private int getXpForLevel(int level) {
@@ -455,7 +443,7 @@ public class ExperienceBottleScreenHandler extends ScreenHandler {
     }
 
     @Override
-    public void onClosed(PlayerEntity player) {
-        super.onClosed(player);
+    public void removed(Player player) {
+        super.removed(player);
     }
 }
