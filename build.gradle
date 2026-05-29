@@ -93,8 +93,8 @@ publishing {
                 url = "https://github.com/ponuing/XpBottleGrabber"
                 licenses {
                     license {
-                        name = "MIT"
-                        url = "https://opensource.org/license/mit"
+                        name = "LGPL-3.0"
+                        url = "https://opensource.org/license/lgpl-3-0"
                     }
                 }
                 developers {
@@ -125,7 +125,7 @@ publishing {
         if (canPublish) {
             maven {
                 name = "GitHubPackages"
-                url = uri("https://maven.pkg.github.com/ponuing/CIT-Reborn")
+                url = uri("https://maven.pkg.github.com/ponuing/XpBottleGrabber")
                 credentials {
                     username = System.getenv("GITHUB_ACTOR")
                     password = System.getenv("GITHUB_TOKEN")
@@ -159,7 +159,7 @@ if (canPublish) {
         generateChangelogTask = tasks.register("generateChangelog", GenerateChangelogTask) {
             lastTag.set(lastTagValue)
             newTag.set(newTagValue)
-            githubUrl.set("https://github.com/ponuing/CIT-Reborn")
+            githubUrl.set("https://github.com/ponuing/XpBottleGrabber")
             prefixFilters.set(project.property("changelog_filter").toString().split(",") as List)
 
             prologue.set([changelogHeader, changelogFileText].findAll { it != null }.join("\n\n"))
@@ -206,7 +206,7 @@ if (canPublish) {
 
             if (System.getenv().containsKey("CURSEFORGE_TOKEN") || dryRun.get()) {
                 curseforge {
-                    projectId = "1485026"
+                    projectId = "1557274"
                     accessToken = providers.environmentVariable("CURSEFORGE_TOKEN")
                     project.property("game_versions_curse").toString().split(",").each {
                         minecraftVersions.add(it)
@@ -219,7 +219,7 @@ if (canPublish) {
             if (System.getenv().containsKey("MODRINTH_TOKEN") || dryRun.get()) {
                 modrinth {
                     accessToken = providers.environmentVariable("MODRINTH_TOKEN")
-                    projectId = "3xbZC1Fh"
+                    projectId = "Z2yJzHom"
                     project.property("game_versions_mr").toString().split(",").each {
                         minecraftVersions.add(it)
                     }

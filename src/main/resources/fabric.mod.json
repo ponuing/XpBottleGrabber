@@ -8,7 +8,7 @@
   "contact": {},
   "license": "LGPL-3.0",
   "icon": "icon.png",
-  "environment": "*",
+  "environment": "server",
   "entrypoints": {
     "main": [
       "com.ponuing.xpbottlegrabbler.XpBottleGrabber"
