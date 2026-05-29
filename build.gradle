@@ -183,13 +183,13 @@ if (canPublish) {
         releaseName = "${project.property("mod_name")} $newTagValue"
         targetCommitish = System.getenv("GITHUB_REF_NAME") ?: "HEAD"
         releaseAssets.from(
-                tasks.named("remapJar").get().outputs.files,
-                tasks.named("remapSourcesJar").get().outputs.files,
+                tasks.named("jar").get().outputs.files,
+                tasks.named("sourcesJar").get().outputs.files,
         )
         subprojects.forEach {
             releaseAssets.from(
-                    it.tasks.named("remapJar").get().outputs.files,
-                    it.tasks.named("remapSourcesJar").get().outputs.files,
+                    it.tasks.named("jar").get().outputs.files,
+                    it.tasks.named("sourcesJar").get().outputs.files,
             )
         }
 
@@ -203,7 +203,7 @@ if (canPublish) {
             type.set(enumValue)
             modLoaders.add("fabric")
             modLoaders.add("quilt")
-            file = tasks.named("remapJar").flatMap { it.archiveFile }
+            file = tasks.named("jar").flatMap { it.archiveFile }
 
             if (System.getenv().containsKey("CURSEFORGE_TOKEN") || dryRun.get()) {
                 curseforge {
