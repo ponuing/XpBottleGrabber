@@ -1,4 +1,4 @@
-package com.battiboom1.xpbottlegrabbler;
+package com.ponuing.xpbottlegrabbler;
 
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.NbtComponent;
@@ -215,7 +215,6 @@ public class ExperienceBottleScreenHandler extends ScreenHandler {
         int totalXp = getTotalExperience(player);
 
         if (totalXp < 10) {
-            // Сообщение о недостатке опыта
             player.sendMessage(
                     net.minecraft.text.Text.literal("§cNot enough experience."),
                     false
@@ -224,7 +223,6 @@ public class ExperienceBottleScreenHandler extends ScreenHandler {
         }
 
         if (!hasEmptyBottle(player)) {
-            // Сообщение о недостатке пустых бутылочек
             player.sendMessage(
                     net.minecraft.text.Text.literal("§cNo empty bottles in inventory."),
                     false
@@ -238,8 +236,6 @@ public class ExperienceBottleScreenHandler extends ScreenHandler {
         giveOrDropItem(player, bottle);
 
         addExperience(player, -10);
-
-        // Сообщение об успешном создании
         player.sendMessage(
                 net.minecraft.text.Text.literal("§aBottle o' Enchanting created! 10 XP spent."),
                 false

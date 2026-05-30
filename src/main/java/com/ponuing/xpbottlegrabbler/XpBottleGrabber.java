@@ -1,4 +1,4 @@
-package com.battiboom1.xpbottlegrabbler;
+package com.ponuing.xpbottlegrabbler;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -16,7 +16,7 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 
-public class XpBottleGrabbler implements ModInitializer {
+public class XpBottleGrabber implements ModInitializer {
     @Override
     public void onInitialize() {
         UseItemCallback.EVENT.register((player, world, hand) -> {

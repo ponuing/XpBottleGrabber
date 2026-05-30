@@ -1,17 +1,17 @@
 {
   "schemaVersion": 1,
-  "id": "xpbottlegrabbler",
+  "id": "xpbottlegrabber",
   "version": "${version}",
-  "name": "XpBottleGrabbler",
-  "description": "re",
+  "name": "XpBottle Grabber",
+  "description": "XpBottle Grabber is a server-side mod for collecting experience in bottles. Mod also allow collect levels into bottles.",
   "authors": [],
   "contact": {},
-  "license": "All-Rights-Reserved",
-  "icon": "assets/xpbottlegrabbler/icon.png",
-  "environment": "*",
+  "license": "LGPL-3.0",
+  "icon": "icon.png",
+  "environment": "server",
   "entrypoints": {
     "main": [
-      "com.battiboom1.xpbottlegrabbler.XpBottleGrabbler"
+      "com.ponuing.xpbottlegrabbler.XpBottleGrabber"
     ]
   },
   "depends": {
