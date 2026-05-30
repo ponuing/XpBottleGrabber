@@ -216,8 +216,8 @@ if (canPublish) {
                     }
                     displayName.set("${project.property("prefix")} ${project.property("mod_name")} ${project.version}")
                     requires("fabric-api")
-                    clientRequired = false
-                    serverRequired = true
+                    client = false
+                    server = true
                 }
             }
 
@@ -230,8 +230,6 @@ if (canPublish) {
                     }
                     displayName.set("${project.property("mod_name")} ${project.version}")
                     requires("fabric-api")
-                    clientSide = "optional"
-                    serverSide = "required"
                 }
             }
         }
