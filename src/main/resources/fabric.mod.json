@@ -3,7 +3,7 @@
   "id": "xpbottlegrabber",
   "version": "${version}",
   "name": "XpBottle Grabber",
-  "description": "re",
+  "description": "XpBottle Grabber is a server-side mod for collecting experience in bottles. Mod also allow collect levels into bottles.",
   "authors": [],
   "contact": {},
   "license": "LGPL-3.0",
